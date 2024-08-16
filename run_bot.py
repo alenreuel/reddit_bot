@@ -4,5 +4,8 @@ x = reddit_bot.RedditBot()
 
 
 while True:
-    x.check_mentions()
+    try:
+        x.check_mentions()
+    except:
+        continue
     
