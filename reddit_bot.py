@@ -31,14 +31,14 @@ class RedditAIBot:
         ----------
             None
         """
-        bot_log_in_dict, master_user_name, cache_db = self.__initialization()
+        bot_log_in_dict = self.__initialization()
         self.reddit_bot = praw.Reddit(client_id=bot_log_in_dict["CLIENT_ID"], client_secret=bot_log_in_dict["CLIENT_SECRET"], 
                              password=bot_log_in_dict["PASSWORD"], user_agent=bot_log_in_dict["USERAGENT"], 
                              username=bot_log_in_dict["USERNAME"]) 
         self.reddit_bot.read_only = False
         self.reddit_bot_user_name = bot_log_in_dict["USERNAME"]
-        self.master_name = master_user_name
-        self.cache_con = sqlite3.connect(cache_db)
+        self.master_name = bot_log_in_dict["MASTER_USERNAME"]
+        self.cache_con = sqlite3.connect(bot_log_in_dict["CACHE_DB_NAME"])
         self.cache_cursor = self.cache_con.cursor()
         self.__create_cache_memory()
 
@@ -87,16 +87,15 @@ class RedditAIBot:
         ----------
             None
         """
-        bot_log_in_dict = {}
-        bot_log_in_dict["CLIENT_ID"] =  input("Enter Client ID: ")
-        bot_log_in_dict["CLIENT_SECRET"] =  input("Enter Client Secret: ")
-        bot_log_in_dict["USERNAME"] =   input("Enter Bot's Username: ")
-        bot_log_in_dict["PASSWORD"] =  input("Enter Bot's Password: ")
-        bot_log_in_dict["USERAGENT"] = input("Enter the Bot's UserAgent: ")
-        master_user_name =  input("Enter the Username of the person that the bot wants to serve as its master: ")
-        cache_db = input("Enter the name of the sqlite database where you want to store a memory of the bot's replies: ")
+        config_dict = {}
+        with open("config.txt", "r") as config_file:
+            for line in config_file:
+                key, value = line.strip().split(": ", 1)
 
-        return bot_log_in_dict, master_user_name, cache_db
+                value = value.strip('"')
+                config_dict[key] = value
+
+        return config_dict
 
 
     def check_mentions(self):    
