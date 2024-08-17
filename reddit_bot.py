@@ -22,7 +22,7 @@ class RedditAIBot:
     2) __create_cache_memory: Helper function to create the cache table in the database.
     3) __comment_reply: Function which replies to the tagged comment.
     4) __llama3_response: Helper function to send inputs and recieve outputs from llama3 via Ollama API.
-    5) 
+    5) check_mentions: Method that brings everything together.
     """
     def __init__(self):        
         """
