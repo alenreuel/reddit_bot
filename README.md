@@ -26,7 +26,7 @@ The program uses praw library(A reddit API wrapper) to serach through the commen
 
 Step 1: Enter all details in config.txt. \
 Step 2: Run run_bot.py \
-Step 3: Comment on any reddit post to test it out! \
+Step 3: Comment on any reddit post to test it out!
 
 Thank you!
 
