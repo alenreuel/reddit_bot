@@ -22,5 +22,11 @@ The following tools have been used for the project:
 
 The program uses praw library(A reddit API wrapper) to serach through the comments made by a user where it has been tagged. If the bot's username is tagged then it will use the reddit submission as context and answers any questions using Llama 3 api via Ollama. The bot will then reply to the comment with it's AI generated answer.
 
+#### How to use?
 
+Step 1: Enter all details in config.txt.
+Step 2: Run run_bot.py
+Step 3: Comment on any reddit post to test it out!
+
+Thank you!
 
