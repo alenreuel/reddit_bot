@@ -50,6 +50,7 @@ class RedditAIBot:
             None
         """
         self.cache_cursor.execute("CREATE TABLE IF NOT EXISTS replied_comments(comment_id VARCHAR(1000));")
+        self.cache_cursor.execute("CREATE TABLE IF NOT EXISTS failed_replies(comment_id VARCHAR(1000), reason VARCHAR(1000));")
         self.cache_con.commit()
     
     def __comment_reply(self, comment):
@@ -76,7 +77,7 @@ class RedditAIBot:
         and you must answer questions to me about the post I have submitted below. (Remember you are: {self.reddit_bot_user_name}) \n"""
         llm_input = prefix + f"Reddit Post Content: {context} \n" + f"Question: {question} \n" + "Please keep the answer human readable. Thank you!"
         response = ollama.chat(model='llama3', messages=[{ 'role': 'user', 'content': f"{llm_input}"}])
-        final_response = response['message']['conte"nt'] + "\n" + f"\n Please Note: I am {self.master_name}'s AI assistant bot powered by Meta Llama3." 
+        final_response = response['message']['content'] + "\n" + f"\n Please Note: I am {self.master_name}'s AI assistant bot powered by Meta Llama3." 
         return final_response
 
     def __initialization(self):
@@ -93,7 +94,7 @@ class RedditAIBot:
         bot_log_in_dict["PASSWORD"] =  input("Enter Bot's Password: ")
         bot_log_in_dict["USERAGENT"] = input("Enter the Bot's UserAgent: ")
         master_user_name =  input("Enter the Username of the person that the bot wants to serve as its master: ")
-        cache_db = "bot_memory.db"  #input("Enter the name of the sqlite database where you want to store a memory of the bot's replies: ")
+        cache_db = input("Enter the name of the sqlite database where you want to store a memory of the bot's replies: ")
 
         return bot_log_in_dict, master_user_name, cache_db
 
@@ -113,10 +114,13 @@ class RedditAIBot:
                 if len(data)>0:
                     continue
                 else:
-                    self.cache_cursor.execute(f"INSERT into replied_comments values ('{comment.id}')")
+                    self.cache_cursor.execute("INSERT into replied_comments values (?)", (comment.id, ))
                     self.cache_con.commit()
-                    self.__comment_reply(comment)
-                    
+                    try:
+                        self.__comment_reply(comment)
+                    except Exception as e:
+                        self.cache_cursor.execute(f"INSERT into failed_replies values (?,?)", (comment.id, str(e)))
+                        self.cache_con.commit()
 
     
     
