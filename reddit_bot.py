@@ -7,7 +7,8 @@ import ollama
 class RedditAIBot:
     """
     Class representing a Reddit bot powered by Llama3. The bot is able to take in the context of any reddit submission and
-    answer any questions you might have about it.
+    answer questions you might have about it.
+    
     Instance Attributes
     -------------------
     1) reddit_bot: Crating an authorized reddit instance(requires Client_ID, Client_Secret, Password, Useragent, Username)
@@ -22,7 +23,7 @@ class RedditAIBot:
     2) __create_cache_memory: Helper function to create the cache table in the database.
     3) __comment_reply: Function which replies to the tagged comment.
     4) __llama3_response: Helper function to send inputs and recieve outputs from llama3 via Ollama API.
-    5) check_mentions: Method that brings everything together.
+    5) check_mentions: Method that get's the post and replies and caches comment_id to prevent the bot from replying to the same comment.
     """
     def __init__(self):        
         """
